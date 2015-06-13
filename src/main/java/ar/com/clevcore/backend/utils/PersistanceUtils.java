@@ -35,8 +35,8 @@ public final class PersistanceUtils {
     }
 
     public static Query getSelectQuery(Object object, Operator operator, boolean onlyId, EntityManager entityManager) {
-        Map<String, Object> propertyValuesMap = Utils.getPropertyValue(object,
-                getEntityPropertyFromObject((Class<?>) object.getClass(), onlyId), true);
+        List<String> entityPropertyFromObject = getEntityPropertyFromObject((Class<?>) object.getClass(), onlyId);
+        Map<String, Object> propertyValuesMap = Utils.getPropertyValue(object, entityPropertyFromObject, true);
 
         String table = StringUtils.splitLast(((Class<?>) object.getClass()).getName(), "\\.");
 
@@ -51,6 +51,7 @@ public final class PersistanceUtils {
             String column;
 
             if (!property.contains(".")) {
+                parentTable = "";
                 childTable = table;
                 column = property;
             } else {
@@ -59,13 +60,13 @@ public final class PersistanceUtils {
                 if (subProperty.length < 3) {
                     parentTable = table;
                 } else {
-                    parentTable = subProperty[subProperty.length - 3];
+                    parentTable = table + "_" + subProperty[subProperty.length - 3];
                 }
 
                 childTable = subProperty[subProperty.length - 2];
                 column = subProperty[subProperty.length - 1];
 
-                String newJoin = " join " + parentTable + "." + childTable + " " + childTable;
+                String newJoin = " join " + parentTable + "." + childTable + " " + parentTable + "_" + childTable;
 
                 if (!join.contains(newJoin)) {
                     join += newJoin;
@@ -78,7 +79,8 @@ public final class PersistanceUtils {
                 where += " and ";
             }
 
-            where += childTable + "." + column + " " + operator.toString() + " :" + getParameterName(property);
+            where += parentTable + "_" + childTable + "." + column + " " + operator.toString() + " :"
+                    + getParameterName(property);
         }
 
         Query query = entityManager.createQuery(select + from + join + where);
@@ -123,12 +125,6 @@ public final class PersistanceUtils {
                 for (String entityPropertyFromObject : getEntityPropertyFromObject(property.getType(), onlyId)) {
                     propertyList.add(property.getName() + "." + entityPropertyFromObject);
                 }
-                /*
-                 * for (Field field2 : field.getType().getDeclaredFields()) { if (onlyId) { if
-                 * (field2.isAnnotationPresent(Id.class)) { if (Utils.isNativeType(field2.getType())) {
-                 * propertyList.add(field.getName()); } } } else { if (Utils.isNativeType(field2.getType())) {
-                 * propertyList.add(field.getName()); } } }
-                 */
             }
         }
 
