@@ -2,6 +2,7 @@ package ar.com.clevcore.backend.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.Query;
+
+import org.eclipse.persistence.indirection.IndirectList;
 
 import ar.com.clevcore.utils.StringUtils;
 import ar.com.clevcore.utils.Utils;
@@ -150,6 +153,29 @@ public final class PersistanceUtils {
             return value + "%";
         }
         return value;
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public static List<?> sortList(List<?> list, String property, boolean ascendingOrder) {
+        if (list == null || list.size() < 2) {
+            return list;
+        }
+
+        try {
+            if (list instanceof IndirectList) {
+                IndirectList indirectList = (IndirectList) list;
+                Object object = indirectList.getDelegateObject();
+
+                if (object instanceof List<?>) {
+                    Collections.sort((List<?>) object, Utils.getComparator(property, ascendingOrder));
+                }
+            } else {
+                Collections.sort(list, Utils.getComparator(property, ascendingOrder));
+            }
+        } catch (Exception e) {
+        }
+
+        return list;
     }
 
 }
