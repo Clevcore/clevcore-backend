@@ -82,8 +82,8 @@ public final class PersistanceUtils {
                 where += " and ";
             }
 
-            where += parentTable + "_" + childTable + "." + column + " " + operator.toString() + " :"
-                    + getParameterName(property);
+            where += parentTable + (parentTable.length() > 0 ? "_" : "") + childTable + "." + column + " "
+                    + operator.toString() + " :" + getParameterName(property);
         }
 
         Query query = entityManager.createQuery(select + from + join + where);
@@ -95,8 +95,8 @@ public final class PersistanceUtils {
         } else {
             for (String property : propertyValuesMap.keySet()) {
                 if (propertyValuesMap.get(property) instanceof String) {
-                    query.setParameter(getParameterName(property), setWildcard(propertyValuesMap.get(property)
-                            .toString()));
+                    query.setParameter(getParameterName(property),
+                            setWildcard(propertyValuesMap.get(property).toString()));
                 } else {
                     query.setParameter(getParameterName(property), propertyValuesMap.get(property));
                 }
