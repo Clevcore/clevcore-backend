@@ -9,12 +9,17 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.criteria.CriteriaQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ar.com.clevcore.backend.utils.PersistanceUtils;
 import ar.com.clevcore.backend.utils.PersistanceUtils.Operator;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DaoImpl<E extends Serializable> implements Dao<E> {
 
+    private static final Logger log = LoggerFactory.getLogger(DaoImpl.class);
+    
     private Class<?> clazz;
 
     public DaoImpl() {
@@ -28,6 +33,7 @@ public class DaoImpl<E extends Serializable> implements Dao<E> {
             criteriaQuery.select(criteriaQuery.from(clazz));
             return (E) entityManager.createQuery(criteriaQuery).getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
+            log.error("[E] No Result or No Unique Exception occurred in [selectOne]", e);
             return null;
         }
     }
@@ -37,6 +43,7 @@ public class DaoImpl<E extends Serializable> implements Dao<E> {
         try {
             return (E) PersistanceUtils.getSelectQuery(entity, Operator.EQUAL, true, entityManager).getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
+            log.error("[E] No Result or No Unique Exception occurred in [selectIdOne]", e);
             return null;
         }
     }
@@ -46,6 +53,7 @@ public class DaoImpl<E extends Serializable> implements Dao<E> {
         try {
             return (E) PersistanceUtils.getSelectQuery(entity, Operator.LIKE, false, entityManager).getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
+            log.error("[E] No Result or No Unique Exception occurred in [selectLikeOne]", e);
             return null;
         }
     }
@@ -55,6 +63,7 @@ public class DaoImpl<E extends Serializable> implements Dao<E> {
         try {
             return (E) PersistanceUtils.getSelectQuery(entity, Operator.EQUAL, false, entityManager).getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
+            log.error("[E] No Result or No Unique Exception  occurred in [selectEqualOne]", e);
             return null;
         }
     }

@@ -12,11 +12,15 @@ import javax.persistence.Id;
 import javax.persistence.Query;
 
 import org.eclipse.persistence.indirection.IndirectList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ar.com.clevcore.utils.StringUtils;
 import ar.com.clevcore.utils.Utils;
 
 public final class PersistanceUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(PersistanceUtils.class);
 
     public static enum Operator {
         EQUAL("="), LIKE("like");
@@ -173,6 +177,8 @@ public final class PersistanceUtils {
                 Collections.sort(list, Utils.getComparator(property, ascendingOrder));
             }
         } catch (Exception e) {
+            log.error("[E] Exception occurred in [sortList]", e);
+
         }
 
         return list;
