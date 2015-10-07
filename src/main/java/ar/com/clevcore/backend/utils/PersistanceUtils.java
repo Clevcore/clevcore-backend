@@ -20,7 +20,7 @@ import ar.com.clevcore.utils.Utils;
 
 public final class PersistanceUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(PersistanceUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PersistanceUtils.class);
 
     public static enum Operator {
         EQUAL("="), LIKE("like");
@@ -30,7 +30,7 @@ public final class PersistanceUtils {
         private Operator(String name) {
             this.name = name;
         }
-
+        @Override
         public String toString() {
             return name;
         }
@@ -119,14 +119,10 @@ public final class PersistanceUtils {
 
         for (Field property : clazz.getDeclaredFields()) {
             if (!property.getType().isAnnotationPresent(Entity.class)) {
-                if (onlyId) {
-                    if (property.isAnnotationPresent(Id.class)) {
+                if (onlyId && property.isAnnotationPresent(Id.class)) {
                         propertyList.add(property.getName());
-                    }
-                } else {
-                    if (Utils.isNativeType(property.getType())) {
+                } else if (Utils.isNativeType(property.getType())) {
                         propertyList.add(property.getName());
-                    }
                 }
             } else {
                 for (String entityPropertyFromObject : getEntityPropertyFromObject(property.getType(), onlyId)) {
@@ -159,8 +155,7 @@ public final class PersistanceUtils {
         return value;
     }
 
-    @SuppressWarnings({ "unchecked" })
-    public static List<?> sortList(List<?> list, String property, boolean ascendingOrder) {
+    public static List sortList(List list, String property, boolean ascendingOrder) {
         if (list == null || list.size() < 2) {
             return list;
         }
@@ -168,16 +163,16 @@ public final class PersistanceUtils {
         try {
             if (list instanceof IndirectList) {
                 IndirectList indirectList = (IndirectList) list;
-                Object object = indirectList.getDelegateObject();
+                Object collectionObject = indirectList.getDelegateObject();
 
-                if (object instanceof List<?>) {
-                    Collections.sort((List<?>) object, Utils.getComparator(property, ascendingOrder));
+                if (collectionObject instanceof List) {
+                    Collections.sort((List) collectionObject, Utils.getComparator(property, ascendingOrder));
                 }
             } else {
                 Collections.sort(list, Utils.getComparator(property, ascendingOrder));
             }
         } catch (Exception e) {
-            log.error("[E] Exception occurred in [sortList]", e);
+            LOG.error("[E] Exception occurred in [sortList]", e);
 
         }
 

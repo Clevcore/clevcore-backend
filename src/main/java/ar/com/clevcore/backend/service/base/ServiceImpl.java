@@ -1,6 +1,7 @@
 package ar.com.clevcore.backend.service.base;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -71,7 +72,7 @@ public class ServiceImpl<E extends Serializable, D extends Dao<E>> implements Se
             return dao.selectAll(getEntityManager());
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -81,7 +82,7 @@ public class ServiceImpl<E extends Serializable, D extends Dao<E>> implements Se
             return dao.selectIdAll(entity, getEntityManager());
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -91,7 +92,7 @@ public class ServiceImpl<E extends Serializable, D extends Dao<E>> implements Se
             return dao.selectEqualAll(entity, getEntityManager());
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -101,7 +102,7 @@ public class ServiceImpl<E extends Serializable, D extends Dao<E>> implements Se
             return dao.selectLikeAll(entity, getEntityManager());
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
-            return null;
+            return Collections.emptyList();
         }
     }
 
