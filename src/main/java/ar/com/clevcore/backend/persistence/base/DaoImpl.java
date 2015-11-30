@@ -1,4 +1,4 @@
-package ar.com.clevcore.backend.persistance.base;
+package ar.com.clevcore.backend.persistence.base;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -12,8 +12,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ar.com.clevcore.backend.utils.PersistanceUtils;
-import ar.com.clevcore.backend.utils.PersistanceUtils.Operator;
+import ar.com.clevcore.backend.utils.PersistenceUtils;
+import ar.com.clevcore.backend.utils.PersistenceUtils.Operator;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DaoImpl<E extends Serializable> implements Dao<E> {
@@ -41,7 +41,7 @@ public class DaoImpl<E extends Serializable> implements Dao<E> {
     @Override
     public E selectIdOne(E entity, EntityManager entityManager) {
         try {
-            return (E) PersistanceUtils.getSelectQuery(entity, Operator.EQUAL, true, entityManager).getSingleResult();
+            return (E) PersistenceUtils.getSelectQuery(entity, Operator.EQUAL, true, entityManager).getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
             LOG.error("[E] No Result or No Unique Exception occurred in [selectIdOne]", e);
             return null;
@@ -51,7 +51,7 @@ public class DaoImpl<E extends Serializable> implements Dao<E> {
     @Override
     public E selectLikeOne(E entity, EntityManager entityManager) {
         try {
-            return (E) PersistanceUtils.getSelectQuery(entity, Operator.LIKE, false, entityManager).getSingleResult();
+            return (E) PersistenceUtils.getSelectQuery(entity, Operator.LIKE, false, entityManager).getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
             LOG.error("[E] No Result or No Unique Exception occurred in [selectLikeOne]", e);
             return null;
@@ -61,7 +61,7 @@ public class DaoImpl<E extends Serializable> implements Dao<E> {
     @Override
     public E selectEqualOne(E entity, EntityManager entityManager) {
         try {
-            return (E) PersistanceUtils.getSelectQuery(entity, Operator.EQUAL, false, entityManager).getSingleResult();
+            return (E) PersistenceUtils.getSelectQuery(entity, Operator.EQUAL, false, entityManager).getSingleResult();
         } catch (NoResultException | NonUniqueResultException e) {
             LOG.error("[E] No Result or No Unique Exception  occurred in [selectEqualOne]", e);
             return null;
@@ -77,17 +77,17 @@ public class DaoImpl<E extends Serializable> implements Dao<E> {
 
     @Override
     public List<E> selectIdAll(E entity, EntityManager entityManager) {
-        return (List<E>) PersistanceUtils.getSelectQuery(entity, Operator.EQUAL, true, entityManager).getResultList();
+        return (List<E>) PersistenceUtils.getSelectQuery(entity, Operator.EQUAL, true, entityManager).getResultList();
     }
 
     @Override
     public List<E> selectEqualAll(E entity, EntityManager entityManager) {
-        return (List<E>) PersistanceUtils.getSelectQuery(entity, Operator.EQUAL, false, entityManager).getResultList();
+        return (List<E>) PersistenceUtils.getSelectQuery(entity, Operator.EQUAL, false, entityManager).getResultList();
     }
 
     @Override
     public List<E> selectLikeAll(E entity, EntityManager entityManager) {
-        return (List<E>) PersistanceUtils.getSelectQuery(entity, Operator.LIKE, false, entityManager).getResultList();
+        return (List<E>) PersistenceUtils.getSelectQuery(entity, Operator.LIKE, false, entityManager).getResultList();
     }
 
     @Override

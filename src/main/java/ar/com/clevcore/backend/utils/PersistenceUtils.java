@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 import ar.com.clevcore.utils.StringUtils;
 import ar.com.clevcore.utils.Utils;
 
-public final class PersistanceUtils {
+public final class PersistenceUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PersistanceUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PersistenceUtils.class);
 
     public static enum Operator {
         EQUAL("="), LIKE("like");
@@ -30,6 +30,7 @@ public final class PersistanceUtils {
         private Operator(String name) {
             this.name = name;
         }
+
         @Override
         public String toString() {
             return name;
@@ -37,7 +38,7 @@ public final class PersistanceUtils {
 
     }
 
-    private PersistanceUtils() {
+    private PersistenceUtils() {
         throw new AssertionError();
     }
 
@@ -99,8 +100,8 @@ public final class PersistanceUtils {
         } else {
             for (String property : propertyValuesMap.keySet()) {
                 if (propertyValuesMap.get(property) instanceof String) {
-                    query.setParameter(getParameterName(property),
-                            setWildcard(propertyValuesMap.get(property).toString()));
+                    query.setParameter(getParameterName(property), setWildcard(propertyValuesMap.get(property)
+                            .toString()));
                 } else {
                     query.setParameter(getParameterName(property), propertyValuesMap.get(property));
                 }
@@ -120,9 +121,9 @@ public final class PersistanceUtils {
         for (Field property : clazz.getDeclaredFields()) {
             if (!property.getType().isAnnotationPresent(Entity.class)) {
                 if (onlyId && property.isAnnotationPresent(Id.class)) {
-                        propertyList.add(property.getName());
+                    propertyList.add(property.getName());
                 } else if (Utils.isNativeType(property.getType())) {
-                        propertyList.add(property.getName());
+                    propertyList.add(property.getName());
                 }
             } else {
                 for (String entityPropertyFromObject : getEntityPropertyFromObject(property.getType(), onlyId)) {
@@ -155,7 +156,8 @@ public final class PersistanceUtils {
         return value;
     }
 
-    public static List sortList(List list, String property, boolean ascendingOrder) {
+    @SuppressWarnings("unchecked")
+    public static List<?> sortList(List<?> list, String property, boolean ascendingOrder) {
         if (list == null || list.size() < 2) {
             return list;
         }
@@ -166,7 +168,7 @@ public final class PersistanceUtils {
                 Object collectionObject = indirectList.getDelegateObject();
 
                 if (collectionObject instanceof List) {
-                    Collections.sort((List) collectionObject, Utils.getComparator(property, ascendingOrder));
+                    Collections.sort((List<?>) collectionObject, Utils.getComparator(property, ascendingOrder));
                 }
             } else {
                 Collections.sort(list, Utils.getComparator(property, ascendingOrder));

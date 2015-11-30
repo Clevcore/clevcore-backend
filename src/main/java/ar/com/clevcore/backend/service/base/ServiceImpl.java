@@ -7,7 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import ar.com.clevcore.backend.persistance.base.Dao;
+import ar.com.clevcore.backend.persistence.base.Dao;
 import ar.com.clevcore.exceptions.ClevcoreException;
 import ar.com.clevcore.utils.ExceptionUtils;
 
