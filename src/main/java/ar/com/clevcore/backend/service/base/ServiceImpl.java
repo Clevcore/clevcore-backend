@@ -28,81 +28,129 @@ public class ServiceImpl<E extends Serializable, D extends Dao<E>> implements Se
 
     @Override
     public E selectOne() throws ClevcoreException {
+        EntityManager entityManager = getEntityManager();
+
         try {
-            return dao.selectOne(getEntityManager());
+            return dao.selectOne(entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
     @Override
     public E selectIdOne(E entity) throws ClevcoreException {
+        EntityManager entityManager = getEntityManager();
+
         try {
-            return dao.selectIdOne(entity, getEntityManager());
+            return dao.selectIdOne(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
     @Override
     public E selectEqualOne(E entity) throws ClevcoreException {
+        EntityManager entityManager = getEntityManager();
+
         try {
-            return dao.selectEqualOne(entity, getEntityManager());
+            return dao.selectEqualOne(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
     @Override
     public E selectLikeOne(E entity) throws ClevcoreException {
+        EntityManager entityManager = getEntityManager();
+
         try {
-            return dao.selectLikeOne(entity, getEntityManager());
+            return dao.selectLikeOne(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return null;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
     @Override
     public List<E> selectAll() throws ClevcoreException {
+        EntityManager entityManager = getEntityManager();
+
         try {
-            return dao.selectAll(getEntityManager());
+            return dao.selectAll(entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return Collections.emptyList();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
     @Override
     public List<E> selectIdAll(E entity) throws ClevcoreException {
+        EntityManager entityManager = getEntityManager();
+
         try {
-            return dao.selectIdAll(entity, getEntityManager());
+            return dao.selectIdAll(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return Collections.emptyList();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
     @Override
     public List<E> selectEqualAll(E entity) throws ClevcoreException {
+        EntityManager entityManager = getEntityManager();
+
         try {
-            return dao.selectEqualAll(entity, getEntityManager());
+            return dao.selectEqualAll(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return Collections.emptyList();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
     @Override
     public List<E> selectLikeAll(E entity) throws ClevcoreException {
+        EntityManager entityManager = getEntityManager();
+
         try {
-            return dao.selectLikeAll(entity, getEntityManager());
+            return dao.selectLikeAll(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return Collections.emptyList();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
