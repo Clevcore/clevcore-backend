@@ -81,11 +81,7 @@ public final class PersistenceUtils {
                 }
             }
 
-            if (where.length() == 0) {
-                where += " where ";
-            } else {
-                where += " and ";
-            }
+            where = prepareWhere(where);
 
             where += parentTable + (parentTable.length() > 0 ? "_" : "") + childTable + "." + column + " "
                     + operator.toString() + " :" + getParameterName(property);
@@ -109,6 +105,16 @@ public final class PersistenceUtils {
         }
 
         return query;
+    }
+
+    public static String prepareWhere(String value) {
+        if (value.length() == 0) {
+            value += " where ";
+        } else {
+            value += " and ";
+        }
+
+        return value;
     }
 
     public static String getParameterName(String property) {
