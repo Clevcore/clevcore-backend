@@ -11,9 +11,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<eclipselink.version>2.5.2</eclipselink.version>
+		<eclipselink.version>2.6.2</eclipselink.version>
 		<java.version>1.8</java.version>
-		<javax.persistence.version>2.1.0</javax.persistence.version>
+		<javax.persistence.version>2.1.1</javax.persistence.version>
 		<junit.version>4.11</junit.version>
 		<slf4j.version>1.7.12</slf4j.version>
 
