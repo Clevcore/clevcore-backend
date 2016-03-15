@@ -38,6 +38,22 @@ public final class PersistenceUtils {
 
     }
 
+    public static enum Condition {
+        AND("and"), OR("or");
+
+        private final String name;
+
+        private Condition(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+    }
+
     private PersistenceUtils() {
         throw new AssertionError();
     }
@@ -170,7 +186,7 @@ public final class PersistenceUtils {
 
         try {
             if (list instanceof IndirectList) {
-                IndirectList indirectList = (IndirectList) list;
+                IndirectList<?> indirectList = (IndirectList<?>) list;
                 Object collectionObject = indirectList.getDelegateObject();
 
                 if (collectionObject instanceof List) {
