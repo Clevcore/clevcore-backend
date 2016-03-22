@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.eclipse.persistence.indirection.IndirectList;
 import org.slf4j.Logger;
@@ -58,7 +58,8 @@ public final class PersistenceUtils {
         throw new AssertionError();
     }
 
-    public static Query getSelectQuery(Object object, Operator operator, boolean onlyId, EntityManager entityManager) {
+    public static TypedQuery<?> getSelectQuery(Object object, Operator operator, boolean onlyId,
+            EntityManager entityManager) {
         List<String> entityPropertyFromObject = getEntityPropertyFromObject((Class<?>) object.getClass(), onlyId);
         Map<String, Object> propertyValuesMap = Utils.getPropertyValue(object, entityPropertyFromObject, true);
 
@@ -103,7 +104,7 @@ public final class PersistenceUtils {
                     + operator.toString() + " :" + getParameterName(property);
         }
 
-        Query query = entityManager.createQuery(select + from + join + where);
+        TypedQuery<?> query = entityManager.createQuery(select + from + join + where, (Class<?>) object.getClass());
 
         if (operator.equals(Operator.EQUAL)) {
             for (String property : propertyValuesMap.keySet()) {
