@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
@@ -60,10 +61,11 @@ public final class PersistenceUtils {
 
     public static TypedQuery<?> getSelectQuery(Object object, Operator operator, boolean onlyId,
             EntityManager entityManager) {
-        List<String> entityPropertyFromObject = getEntityPropertyFromObject((Class<?>) object.getClass(), onlyId);
+        Class<?> clazz = (Class<?>) object.getClass();
+        List<String> entityPropertyFromObject = getEntityPropertyFromObject(clazz, onlyId);
         Map<String, Object> propertyValuesMap = Utils.getPropertyValue(object, entityPropertyFromObject, true);
 
-        String table = StringUtils.splitLast(((Class<?>) object.getClass()).getName(), "\\.");
+        String table = StringUtils.splitLast(clazz.getName(), "\\.");
 
         String select = "select " + table;
         String from = " from " + table + " " + table;
@@ -71,40 +73,48 @@ public final class PersistenceUtils {
         String where = "";
 
         for (String property : propertyValuesMap.keySet()) {
-            String parentTable;
-            String childTable;
-            String column;
-
             if (!property.contains(".")) {
-                parentTable = "";
-                childTable = table;
-                column = property;
+                where = prepareWhere(where);
+                where += table + "." + property + " " + operator.toString() + " :" + getParameterName(property);
             } else {
+                String parentTable;
+                String childTable;
+                String column;
+                String newJoin;
+
+                Field field;
+
                 String[] subProperty = property.split("\\.");
 
                 if (subProperty.length < 3) {
                     parentTable = table;
                 } else {
-                    parentTable = table + "_" + subProperty[subProperty.length - 3];
+                    parentTable = getTableName(table, subProperty[subProperty.length - 3]);
                 }
 
                 childTable = subProperty[subProperty.length - 2];
                 column = subProperty[subProperty.length - 1];
 
-                String newJoin = " join " + parentTable + "." + childTable + " " + parentTable + "_" + childTable;
+                field = getFieldFromProperty(clazz, property.substring(0, property.lastIndexOf(".")));
+                if (!field.isAnnotationPresent(EmbeddedId.class)) {
+                    newJoin = " join " + parentTable + "." + childTable + " " + getTableName(parentTable, childTable);
 
-                if (!join.contains(newJoin)) {
-                    join += newJoin;
+                    if (!join.contains(newJoin)) {
+                        join += newJoin;
+                    }
+
+                    where = prepareWhere(where);
+                    where += getTableName(parentTable, childTable) + "." + column + " " + operator.toString() + " :"
+                            + getParameterName(property);
+                } else {
+                    where = prepareWhere(where);
+                    where += parentTable + "." + childTable + "." + column + " " + operator.toString() + " :"
+                            + getParameterName(property);
                 }
             }
-
-            where = prepareWhere(where);
-
-            where += parentTable + (parentTable.length() > 0 ? "_" : "") + childTable + "." + column + " "
-                    + operator.toString() + " :" + getParameterName(property);
         }
 
-        TypedQuery<?> query = entityManager.createQuery(select + from + join + where, (Class<?>) object.getClass());
+        TypedQuery<?> query = entityManager.createQuery(select + from + join + where, clazz);
 
         if (operator.equals(Operator.EQUAL)) {
             for (String property : propertyValuesMap.keySet()) {
@@ -124,6 +134,14 @@ public final class PersistenceUtils {
         return query;
     }
 
+    private static String getTableName(String value1, String value2) {
+        return value1 + "_" + value2;
+    }
+
+    private static String getParameterName(String property) {
+        return property.replace(".", "");
+    }
+
     public static String prepareWhere(String value) {
         if (value.length() == 0) {
             value += " where ";
@@ -134,29 +152,58 @@ public final class PersistenceUtils {
         return value;
     }
 
-    public static String getParameterName(String property) {
-        return property.replace(".", "");
-    }
-
     public static List<String> getEntityPropertyFromObject(Class<?> clazz, boolean onlyId) {
         List<String> propertyList = new ArrayList<String>();
 
-        for (Field property : clazz.getDeclaredFields()) {
-            if (!property.getType().isAnnotationPresent(Entity.class)) {
-                if (onlyId && property.isAnnotationPresent(Id.class)) {
-                    propertyList.add(property.getName());
-                } else if (Utils.isNativeType(property.getType())) {
-                    propertyList.add(property.getName());
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getType().isAnnotationPresent(Entity.class) || field.isAnnotationPresent(EmbeddedId.class)) {
+                for (String entityPropertyFromObject : getEntityPropertyFromObject(field.getType(), onlyId)) {
+                    propertyList.add(field.getName() + "." + entityPropertyFromObject);
                 }
             } else {
-                for (String entityPropertyFromObject : getEntityPropertyFromObject(property.getType(), onlyId)) {
-                    propertyList.add(property.getName() + "." + entityPropertyFromObject);
+                if (onlyId) {
+                    if (field.isAnnotationPresent(Id.class)) {
+                        propertyList.add(field.getName());
+                    }
+                } else if (Utils.isNativeType(field.getType())) {
+                    propertyList.add(field.getName());
                 }
             }
         }
 
         return propertyList;
     }
+
+    public static Field getFieldFromProperty(Class<?> clazz, String property) {
+        Field field = null;
+
+        String[] propertyArray = property.split("\\.");
+        for (int i = 0; i < propertyArray.length; i++) {
+            try {
+                field = clazz.getDeclaredField(propertyArray[i]);
+                clazz = field.getType();
+            } catch (NoSuchFieldException | SecurityException e) {
+            }
+        }
+
+        return field;
+    }
+
+    // public static Field getFieldFromProperty(Class<?> clazz, String property) {
+    //
+    // for (Field field : clazz.getDeclaredFields()) {
+    // if (property.contains(".")) {
+    // if (field.getType().isAnnotationPresent(Entity.class) || field.isAnnotationPresent(EmbeddedId.class)) {
+    // return getFieldFromProperty(field.getType(), property.substring(property.indexOf(".") + 1));
+    // }
+    // } else {
+    // if (field.getName().equals(property)) {
+    // return field;
+    // }
+    // }
+    // }
+    // return null;
+    // }
 
     public static String setWildcard(String value) {
         if (value != null) {
