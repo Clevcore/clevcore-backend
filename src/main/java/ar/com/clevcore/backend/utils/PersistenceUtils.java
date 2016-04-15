@@ -10,6 +10,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 
 import org.eclipse.persistence.indirection.IndirectList;
@@ -157,8 +158,10 @@ public final class PersistenceUtils {
 
         for (Field field : clazz.getDeclaredFields()) {
             if (field.getType().isAnnotationPresent(Entity.class) || field.isAnnotationPresent(EmbeddedId.class)) {
-                for (String entityPropertyFromObject : getEntityPropertyFromObject(field.getType(), onlyId)) {
-                    propertyList.add(field.getName() + "." + entityPropertyFromObject);
+                if (!field.isAnnotationPresent(Transient.class)) {
+                    for (String entityPropertyFromObject : getEntityPropertyFromObject(field.getType(), onlyId)) {
+                        propertyList.add(field.getName() + "." + entityPropertyFromObject);
+                    }
                 }
             } else {
                 if (onlyId) {
