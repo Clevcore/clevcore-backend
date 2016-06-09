@@ -7,9 +7,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import ar.com.clevcore.backend.exceptions.ClevcoreException;
 import ar.com.clevcore.backend.persistence.base.Dao;
-import ar.com.clevcore.exceptions.ClevcoreException;
-import ar.com.clevcore.utils.ExceptionUtils;
+import ar.com.clevcore.backend.utils.ExceptionUtils;
 
 public class ServiceImpl<E extends Serializable, D extends Dao<E>> implements Service<E> {
 

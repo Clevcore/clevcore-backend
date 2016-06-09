@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import ar.com.clevcore.exceptions.ClevcoreException;
+import ar.com.clevcore.backend.exceptions.ClevcoreException;
 
 public interface Service<E extends Serializable> {
 
