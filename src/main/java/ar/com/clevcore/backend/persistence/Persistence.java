@@ -1,11 +1,11 @@
-package ar.com.clevcore.backend.persistence.base;
+package ar.com.clevcore.backend.persistence;
 
 import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
-public interface Dao<E extends Serializable> {
+public interface Persistence<E extends Serializable> {
 
     E selectOne(EntityManager entityManager);
 

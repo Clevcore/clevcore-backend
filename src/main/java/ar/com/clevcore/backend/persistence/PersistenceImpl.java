@@ -1,4 +1,4 @@
-package ar.com.clevcore.backend.persistence.base;
+package ar.com.clevcore.backend.persistence;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -16,13 +16,13 @@ import ar.com.clevcore.backend.utils.PersistenceUtils;
 import ar.com.clevcore.backend.utils.PersistenceUtils.Operator;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class DaoImpl<E extends Serializable> implements Dao<E> {
+public class PersistenceImpl<E extends Serializable> implements Persistence<E> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DaoImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PersistenceImpl.class);
 
     private Class<?> clazz;
 
-    public DaoImpl() {
+    public PersistenceImpl() {
         clazz = (Class<?>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 

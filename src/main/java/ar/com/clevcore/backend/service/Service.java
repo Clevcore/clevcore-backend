@@ -1,4 +1,4 @@
-package ar.com.clevcore.backend.service.base;
+package ar.com.clevcore.backend.service;
 
 import java.io.Serializable;
 import java.util.List;

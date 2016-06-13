@@ -1,4 +1,4 @@
-package ar.com.clevcore.backend.service.base;
+package ar.com.clevcore.backend.service;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -8,10 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import ar.com.clevcore.backend.exceptions.ClevcoreException;
-import ar.com.clevcore.backend.persistence.base.Dao;
+import ar.com.clevcore.backend.persistence.Persistence;
 import ar.com.clevcore.backend.utils.ExceptionUtils;
 
-public class ServiceImpl<E extends Serializable, D extends Dao<E>> implements Service<E> {
+public class ServiceImpl<E extends Serializable, D extends Persistence<E>> implements Service<E> {
 
     protected D dao;
     protected EntityManagerFactory entityManagerFactory;
