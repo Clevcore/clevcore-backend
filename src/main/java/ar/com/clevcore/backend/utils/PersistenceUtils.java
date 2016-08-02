@@ -124,8 +124,8 @@ public final class PersistenceUtils {
         } else {
             for (String property : propertyValuesMap.keySet()) {
                 if (propertyValuesMap.get(property) instanceof String) {
-                    query.setParameter(getParameterName(property), setWildcard(propertyValuesMap.get(property)
-                            .toString()));
+                    query.setParameter(getParameterName(property),
+                            setWildcard(propertyValuesMap.get(property).toString()));
                 } else {
                     query.setParameter(getParameterName(property), propertyValuesMap.get(property));
                 }
@@ -192,22 +192,6 @@ public final class PersistenceUtils {
         return field;
     }
 
-    // public static Field getFieldFromProperty(Class<?> clazz, String property) {
-    //
-    // for (Field field : clazz.getDeclaredFields()) {
-    // if (property.contains(".")) {
-    // if (field.getType().isAnnotationPresent(Entity.class) || field.isAnnotationPresent(EmbeddedId.class)) {
-    // return getFieldFromProperty(field.getType(), property.substring(property.indexOf(".") + 1));
-    // }
-    // } else {
-    // if (field.getName().equals(property)) {
-    // return field;
-    // }
-    // }
-    // }
-    // return null;
-    // }
-
     public static String setWildcard(String value) {
         if (value != null) {
             return "%" + value + "%";
@@ -225,6 +209,13 @@ public final class PersistenceUtils {
     public static String setWildcardLast(String value) {
         if (value != null) {
             return value + "%";
+        }
+        return value;
+    }
+
+    public static String setWildcardAll(String value) {
+        if (value != null) {
+            return "%" + value.replaceAll(" ", "%") + "%";
         }
         return value;
     }
