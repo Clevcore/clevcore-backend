@@ -1,3 +1,22 @@
+# v1.4.0
+- New Release v1.4.0
+- Add method setWildcardAll
+- Rename the classes "Dao" by "Persistence"
+- Move service.base to service package
+- Move Exception Utils to Backend project
+- Move ClevcoreException to Backend project
+- Update maven version
+- Ignore transient annotation type in "getEntityPropertyFromObject"
+- Accept EmbeddedId object
+- Use TypedQuery instead of Query
+- Add (AND, OR) Condition in PersistenceUtils
+- Update eclipselink and javax persistence version
+- Create method "prepareWhere" for create where sql
+- Close all entityManager in serviceImpl
+- Remove mySql of pom.xml clevcore-backend
+- Rename persistance file and dir for persistence
+- Cleanup using SonarQube
+
 # v1.3.0
 - New Release v1.3.0
 - Added slf4j-log4j support
