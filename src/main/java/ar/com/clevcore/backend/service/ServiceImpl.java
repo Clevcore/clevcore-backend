@@ -11,13 +11,13 @@ import ar.com.clevcore.backend.exceptions.ClevcoreException;
 import ar.com.clevcore.backend.persistence.Persistence;
 import ar.com.clevcore.backend.utils.ExceptionUtils;
 
-public class ServiceImpl<E extends Serializable, D extends Persistence<E>> implements Service<E> {
+public class ServiceImpl<E extends Serializable, P extends Persistence<E>> implements Service<E> {
 
-    protected D dao;
+    protected P persistence;
     protected EntityManagerFactory entityManagerFactory;
 
-    public ServiceImpl(D dao, EntityManagerFactory entityManagerFactory) {
-        this.dao = dao;
+    public ServiceImpl(P persistence, EntityManagerFactory entityManagerFactory) {
+        this.persistence = persistence;
         this.entityManagerFactory = entityManagerFactory;
     }
 
@@ -31,7 +31,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
         EntityManager entityManager = getEntityManager();
 
         try {
-            return dao.selectOne(entityManager);
+            return persistence.selectOne(entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return null;
@@ -47,7 +47,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
         EntityManager entityManager = getEntityManager();
 
         try {
-            return dao.selectIdOne(entity, entityManager);
+            return persistence.selectIdOne(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return null;
@@ -63,7 +63,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
         EntityManager entityManager = getEntityManager();
 
         try {
-            return dao.selectEqualOne(entity, entityManager);
+            return persistence.selectEqualOne(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return null;
@@ -79,7 +79,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
         EntityManager entityManager = getEntityManager();
 
         try {
-            return dao.selectLikeOne(entity, entityManager);
+            return persistence.selectLikeOne(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return null;
@@ -95,7 +95,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
         EntityManager entityManager = getEntityManager();
 
         try {
-            return dao.selectAll(entityManager);
+            return persistence.selectAll(entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return Collections.emptyList();
@@ -111,7 +111,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
         EntityManager entityManager = getEntityManager();
 
         try {
-            return dao.selectIdAll(entity, entityManager);
+            return persistence.selectIdAll(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return Collections.emptyList();
@@ -127,7 +127,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
         EntityManager entityManager = getEntityManager();
 
         try {
-            return dao.selectEqualAll(entity, entityManager);
+            return persistence.selectEqualAll(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return Collections.emptyList();
@@ -143,7 +143,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
         EntityManager entityManager = getEntityManager();
 
         try {
-            return dao.selectLikeAll(entity, entityManager);
+            return persistence.selectLikeAll(entity, entityManager);
         } catch (Exception e) {
             ExceptionUtils.treateException(e, this);
             return Collections.emptyList();
@@ -160,7 +160,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
 
         try {
             entityManager.getTransaction().begin();
-            dao.insert(entity, entityManager);
+            persistence.insert(entity, entityManager);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
@@ -180,7 +180,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
 
         try {
             entityManager.getTransaction().begin();
-            dao.update(entity, entityManager);
+            persistence.update(entity, entityManager);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
@@ -200,7 +200,7 @@ public class ServiceImpl<E extends Serializable, D extends Persistence<E>> imple
 
         try {
             entityManager.getTransaction().begin();
-            dao.delete(entity, entityManager);
+            persistence.delete(entity, entityManager);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
