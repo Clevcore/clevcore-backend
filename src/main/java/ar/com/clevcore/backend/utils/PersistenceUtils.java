@@ -22,7 +22,7 @@ import ar.com.clevcore.utils.Utils;
 
 public final class PersistenceUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PersistenceUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(PersistenceUtils.class);
 
     public static enum Operator {
         EQUAL("="), LIKE("like");
@@ -192,6 +192,31 @@ public final class PersistenceUtils {
         return field;
     }
 
+    public static Object getCloneEntityOnlyWithId(Object entity) {
+        Object result = null;
+
+        try {
+            Class<?> clazz = entity.getClass();
+            result = clazz.getConstructor().newInstance();
+
+            for (Field field : clazz.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Id.class) || field.isAnnotationPresent(EmbeddedId.class)) {
+                    boolean accessible = field.isAccessible();
+
+                    field.setAccessible(true);
+                    field.set(result, field.get(entity));
+                    field.setAccessible(accessible);
+
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            log.error("[E] Exception occurred in [getEntityOnlyWithId]", e);
+        }
+
+        return result;
+    }
+
     public static String setWildcard(String value) {
         if (value != null) {
             return "%" + value + "%";
@@ -238,7 +263,7 @@ public final class PersistenceUtils {
                 Collections.sort(list, Utils.getComparator(property, ascendingOrder));
             }
         } catch (Exception e) {
-            LOG.error("[E] Exception occurred in [sortList]", e);
+            log.error("[E] Exception occurred in [sortList]", e);
 
         }
 
