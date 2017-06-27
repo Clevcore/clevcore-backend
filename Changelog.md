@@ -1,3 +1,10 @@
+# v1.5.0
+- New Release v1.5.0
+- Add sortList without ascendingOrder property
+- Add method to clone entity only with id
+- Change "dao" name by "persistence" name
+- Optimize pom file
+
 # v1.4.0
 - New Release v1.4.0
 - Add method setWildcardAll
