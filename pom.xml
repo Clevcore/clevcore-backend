@@ -46,7 +46,7 @@
 		<clevcore-java.version>1.5.2</clevcore-java.version>
 
 		<!-- Eclipselink -->
-		<eclipselink.version>2.6.3</eclipselink.version>
+		<eclipselink.version>2.6.5</eclipselink.version>
 		<javax.persistence.version>2.1.1</javax.persistence.version>
 
 		<!--Logging -->
